@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="width: 18rem;">
+    {% if film.image %}
+    <img src="{{film.image.url}}" class="card-img-top" alt="...">
+    {% else %}
+    <img src="/media/empty_image.jpg" class="card-img-top" alt="...">
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">Title: {{ film.title }}</h5>
+        <p class="card-text">Episodes: {{ film.episodes }}</p>
+        <p class="card-text">Description: {{ film.description }}</p>
+    </div>
+</div>
+{% endblock %}
