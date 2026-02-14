@@ -1,18 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
-{% for film in films %}
-<div class="card" style="width: 18rem;">
-    {% if film.image %}
-    <img src="{{film.image.url}}" class="card-img-top" alt="...">
-    {% else %}
-    <img src="/media/empty_image.jpg" class="card-img-top" alt="...">
-    {% endif %}
-    <div class="card-body">
-        <h5 class="card-title">{{ film.title }}</h5>
-        <p class="card-text">{{ film.episodes }}</p>
-        <a href="{{film.id}}" class="btn btn-primary">See details</a>
 
-    </div>
+<form method="GET" action="">
+    <input type="text" name="search" placeholder="Search..." value="{{ search_query }}">
+
+    <label>Categories:</label>
+    <select name="category_id" multiple>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id in selected_categories %}selected{% endif %}>
+                {{ category }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Genres:</label>
+    <select name="genre_id" multiple>
+        {% for genre in genres %}
+            <option value="{{ genre.id }}" {% if genre.id in selected_genres %}selected{% endif %}>
+                {{ genre }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Episodes:</label>
+    <select name="episodes_choice">
+        <option value="">All</option>
+        <option value="1" {% if episodes_choice == "1" %}selected{% endif %}>More than 100</option>
+        <option value="2" {% if episodes_choice == "2" %}selected{% endif %}>Less than 100</option>
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<div class="films-list">
+    {% for film in films %}
+        <div class="card" style="width: 18rem; margin:10px; display:inline-block;">
+            {% if film.image %}
+                <img src="{{ film.image.url }}" class="card-img-top" alt="...">
+            {% else %}
+                <img src="/media/empty_image.jpg" class="card-img-top" alt="...">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ film.title }}</h5>
+                <p class="card-text">{{ film.episodes }} episodes</p>
+                <a href="{% url 'film_detail' film.id %}" class="btn btn-primary">See details</a>
+            </div>
+        </div>
+    {% empty %}
+        <p>No films found</p>
+    {% endfor %}
 </div>
-{% endfor %}
+
 {% endblock %}
+

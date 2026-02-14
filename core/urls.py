@@ -16,14 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from films.views import film_list, base, film_detail, film_create
+from films.views import films_list, base, film_detail, film_create
 from django.conf.urls import static
 from django.conf import settings
+
+from users.views import register, login_user, logout_user
+users = [
+    path("register/", register),
+    path("login/", login_user),
+    path("logout/",logout_user , name="logout"),
+
+]
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('films/', film_list),
-    path('films/<int:film_id>/', film_detail),
-    path('', base),
-    
-    path('film_create/', film_create )
-]+static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('films/', films_list, name='films_list'),  # имя для списка фильмов
+    path('films/<int:film_id>/', film_detail, name='film_detail'),  # имя для детального просмотра
+    path('', base, name='base'),
+    path('film_create/', film_create, name='film_create'),
+    *users
+] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

@@ -25,7 +25,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/films/">List of movies</a>
                     </li>
-
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout/">Exit</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register/">Registration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login/">Enter</a>
+                    </li>
+                    {% endif %}
                 </ul>
 
             </div>
@@ -33,13 +44,18 @@
     </nav>
 </header>
 
+
 {% block content %}
+
 {% for category in categories %}
-<div class="card" style="width: 18rem;"></div>
+<div class="card" style="width: 18rem;">
     <div class="card-body">
-            <p class="card-text">{{ category.rating }}</p>
-            <a href="/films/?category_id={{category.id}}" class="btn btn-primary">See details</a>
+        <p class="card-text">{{ category.rating }}</p>
+        <a href="/films/?category_id={{category.id}}" class="btn btn-primary">
+            See details
+        </a>
     </div>
 </div>
 {% endfor %}
+
 {% endblock %}
