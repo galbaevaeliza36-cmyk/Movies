@@ -5,11 +5,12 @@ from django.db.models import Q
 from films.forms import CreatFilmsForms
 from films.models import Film, Category,Genre
 from films.forms import SearchForm
+from django.views.generic import CreateView, ListView
 
 # Create your views here.
 
 @login_required(login_url="/login/")
-def films_list(request):
+class filmsListVeiw(ListView):
     films = Film.objects.all()
     forms = SearchForm(request.GET or None) 
 
