@@ -44,6 +44,7 @@
                 <h5 class="card-title">{{ film.title }}</h5>
                 <p class="card-text">{{ film.episodes }} episodes</p>
                 <a href="{% url 'film_detail' film.id %}" class="btn btn-primary">See details</a>
+                <a href="{% url 'delete_films' film.id %}" class="btn btn-primary">delete</a>
             </div>
         </div>
     {% empty %}

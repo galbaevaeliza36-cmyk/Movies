@@ -55,7 +55,8 @@ def films_list(request):
     }
 
     page = int(request.GET.get("page")) if request.GET.get("page") else 1
-    max_page = int(len(films)/ limit)
+    max_page = math.ceil(len(films)/ limit)
+    print(max_page)
     start = (page -1)*limit
     stop = page * limit
     list_pages = range(1, max_page +1)
@@ -68,9 +69,30 @@ def films_list(request):
 
 
 
+# def film_create(request):
+#     user = request.user
+#     if user.is_staff:
+#         if request.method == 'GET':
+#             form = CreatFilmsForms()
+#             return render(request, 'films/film_create.html', {'form': form})
+
+#         elif request.method == 'POST':
+#             form = CreatFilmsForms(request.POST, request.FILES)  
+#             if form.is_valid():
+#                 Film.objects.create(
+#                     title=form.cleaned_data.get("title"),
+#                     episodes=form.cleaned_data.get("episodes"),
+#                     image=form.cleaned_data.get("image")
+#                 )
+#                 return redirect('/films/')
+#         else:
+#                 return render(request, 'films/film_create.html', {'form': form})
+#         return HttpResponse ("Error")
+#     return HttpResponse("Permission denied" )
+
+
+
 def film_create(request):
-    user = request.user
-    if user.is_staff:
         if request.method == 'GET':
             form = CreatFilmsForms()
             return render(request, 'films/film_create.html', {'form': form})
@@ -79,32 +101,23 @@ def film_create(request):
             form = CreatFilmsForms(request.POST, request.FILES)  
             if form.is_valid():
                 Film.objects.create(
+                     profile = request.user.profile,
                     title=form.cleaned_data.get("title"),
                     episodes=form.cleaned_data.get("episodes"),
                     image=form.cleaned_data.get("image")
                 )
                 return redirect('/films/')
         else:
- 
-            return render(request, 'films/film_create.html', {'form': form})
-    return HttpResponse("Permission denied" )
+                return render(request, 'films/film_create.html', {'form': form})
+        return HttpResponse ("Error")
+   
 
-def add_film(request):
-    if not request.user.is_staff:  
+def delete_films(request, films_id):
+    product = Film.objects.get(id=films_id)
+    if request.user.profile != Film.profile:
         return HttpResponse("Permission denied")
-    
-    if request.method == 'POST':
-        form = CreatFilmsForms(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('film_list') 
-    else:
-        form = CreatFilmsForms()
-    
-    return render(request, 'films/film_create.html', {'form': form})
-
-
-
+    product.delete()
+    return redirect("/films/")
 
 def base(request):
     if request.method == 'GET':
