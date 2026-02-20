@@ -16,27 +16,46 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from films.views import films_list, base, film_detail, film_create, delete_films
 from django.conf.urls import static
 from django.conf import settings
-from films import views
 
-from users.views import register,profile, login_user, logout_user,update_profile
+from films.views import (
+    FilmListView,
+    FilmCreateView,
+    FilmDeleteView,
+    FilmDetailView,
+    BaseView,
+)
+
+from users.views import register, profile, login_user, logout_user, update_profile
+
+class_urls = [
+    path("class/films/", FilmListView.as_view()),
+    path('class/film_create', FilmCreateView.as_view()),
+    path('class/base', BaseView.as_view()),
+    path("class/films/<int:film_id>/", FilmDetailView.as_view()),
+    path("class/film_delete/<int:film_id>/", FilmDeleteView.as_view())
+
+    ]
 users = [
     path("register/", register),
     path("login/", login_user),
-    path("logout/",logout_user , name="logout"),
-    path("profile/",profile),
+    path("logout/", logout_user, name="logout"),
+    path("profile/", profile),
     path("update_profile/", update_profile),
-
 ]
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('films/', films_list, name='films_list'), 
-    path('films/<int:film_id>/', film_detail, name='film_detail'),  
-    path('', base, name='base'),
-    path('films_create/', film_create, name='films_create'),
-    path("films_delete/<int:films_id>/", delete_films, name="delete_films"),
-    *users
-] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+   
+    path("films/", FilmListView.as_view(), name="films_list"),
+    path("films/create/", FilmCreateView.as_view(), name="film_create"),
+    path("films/<int:pk>/delete/", FilmDeleteView.as_view(), name="film_delete"),
+    path("films/<int:film_id>/", FilmDetailView.as_view(), name="film_detail"),
+
+
+    path("", BaseView.as_view(), name="base"),
+
+    *users, *class_urls 
+    
+] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
